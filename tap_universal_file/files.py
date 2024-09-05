@@ -6,8 +6,9 @@ import datetime
 import re
 import tempfile
 from functools import cached_property
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, Generator
+
+from tap_universal_file.s3_client import S3FileSystem
 
 if TYPE_CHECKING:
     import logging
@@ -47,6 +48,9 @@ class FilesystemManager:
 
         if self.protocol == "file":
             return fsspec.filesystem("file")
+
+        if self.protocol == "s3":
+            return S3FileSystem(self.config)
 
         if caching_strategy == "once":
             # Creaing a filecache without specifying cache_storage location will cause
