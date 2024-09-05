@@ -28,7 +28,7 @@ class S3FileSystem:
             **fsconfig,
         )
 
-    def find(self):  # noqa: ANN201
+    def find(self, path):  # noqa: ANN201, ANN001, ARG002
         """Return as list of s3 objects.
 
         Args:
