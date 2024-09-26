@@ -7,6 +7,7 @@ import fsspec
 
 class S3FileSystem:
     """This is to overwrite the functionality of reading the files for S3."""
+
     def __init__(self, config: dict[str, Any]) -> None:  # noqa: FA102
         """Initialize a new S3FileManager instance.
 
@@ -17,9 +18,13 @@ class S3FileSystem:
         self.client = boto3.client("s3")
         fsconfig = {
             "anon": False,
-            "key": config["AWS_ACCESS_KEY_ID"],
-            "secret": config["AWS_SECRET_ACCESS_KEY"],
         }
+        if "AWS_ACCESS_KEY_ID" in config and "AWS_SECRET_ACCESS_KEY" in config:
+            fsconfig = {
+                **fsconfig,
+                "key": config["AWS_ACCESS_KEY_ID"],
+                "secret": config["AWS_SECRET_ACCESS_KEY"],
+            }
         o = urlparse(f's3://{config["filepath"]}', allow_fragments=False)
         self.bucket = o.netloc
         self.prefix = o.path.lstrip("/")
